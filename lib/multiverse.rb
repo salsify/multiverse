@@ -18,7 +18,13 @@ module Multiverse
     end
 
     def parent_class_name
-      db ? "#{db.camelize}Record" : "ApplicationRecord"
+      if db
+        "#{db.camelize}Record"
+      elsif ActiveRecord::VERSION::MAJOR >= 5
+        "ApplicationRecord"
+      else
+        "ActiveRecord::Base"
+      end
     end
 
     def record_class
@@ -37,6 +43,14 @@ module Multiverse
 
     def env(environment)
       db ? "#{db}_#{environment}" : environment
+    end
+
+    def db_configuration(environment = Rails.env)
+      ActiveRecord::Base.configurations[env(environment)]
+    end
+
+    def db_overriden?
+      db.present?
     end
   end
 end

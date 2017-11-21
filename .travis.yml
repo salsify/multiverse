@@ -1,5 +1,5 @@
 language: ruby
-rvm: 2.4.2
+rvm: 2.3.5
 gemfile:
   - Gemfile
 sudo: false
@@ -12,3 +12,4 @@ notifications:
 env:
   - RAILS_VERSION=5.1.4 RAILS_ENV=development
   - RAILS_VERSION=5.0.6 RAILS_ENV=development
+  - RAILS_VERSION=4.1.16 RAILS_ENV=development

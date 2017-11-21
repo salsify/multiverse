@@ -6,7 +6,6 @@ class MultiverseTest < Minitest::Test
   end
 
   def test_all
-    rails_version = ENV["RAILS_VERSION"] || "5.1.4"
     gem_path = File.dirname(__dir__)
     clean = ENV["CLEAN"]
 
@@ -28,6 +27,10 @@ class MultiverseTest < Minitest::Test
             f.puts "gem 'multiverse', path: '#{gem_path}'"
           end
         end
+
+        # Must run `bundle update` to regenerate Gemfile.lock
+        # after the rails dependencies were added
+        cmd "bundle update"
         cmd "bundle"
 
         unless clean
@@ -50,7 +53,7 @@ class MultiverseTest < Minitest::Test
 
         # test rails generatde model
         cmd "bin/rails generate model User"
-        assert_includes File.read("app/models/user.rb"), "ApplicationRecord"
+        assert_includes File.read("app/models/user.rb"), (rails5? ? "ApplicationRecord" : "ActiveRecord::Base")
         # TODO assert migration file in right directory
 
         unless clean
@@ -129,17 +132,27 @@ class MultiverseTest < Minitest::Test
     puts
   end
 
+  def rails_version
+    ENV["RAILS_VERSION"] || "5.1.4"
+  end
+
   def database_exist?(dbname)
     File.exist?("db/#{dbname}.sqlite3")
   end
 
   def assert_tables(dbname, tables)
-    expected_tables = tables + ["ar_internal_metadata", "schema_migrations"]
+    default_tables = rails5? ? ["ar_internal_metadata"] : []
+    expected_tables = tables + default_tables + ["schema_migrations"]
     assert_equal expected_tables.sort, actual_tables(dbname).sort
   end
 
   def actual_tables(dbname)
     db = SQLite3::Database.new("db/#{dbname}.sqlite3")
     db.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'").map(&:first)
+  end
+
+  def rails5?
+    # should work until Rails 10 :)
+    rails_version >= "5"
   end
 end

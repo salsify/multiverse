@@ -25,7 +25,7 @@ module Multiverse
       # but not for db:schema:load, as this
       # will mess up the Multiverse test environment
       ActiveRecord::SchemaMigration.singleton_class.prepend(Multiverse::Connection)
-      ActiveRecord::InternalMetadata.singleton_class.prepend(Multiverse::Connection)
+      ActiveRecord::InternalMetadata.singleton_class.prepend(Multiverse::Connection) if ActiveRecord::VERSION::MAJOR >= 5
       super
     end
   end

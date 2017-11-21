@@ -4,9 +4,9 @@
 
 One of the easiest ways to scale your database is to move large, infrequently-joined tables to a separate database. **ActiveRecord supports multiple databases, but Rails doesn’t provide a way to manage them.** Multiverse changes this.
 
-Works with Rails 5+
+Works with Rails 4.1+
 
-[![Build Status](https://travis-ci.org/ankane/multiverse.svg?branch=master)](https://travis-ci.org/ankane/multiverse)
+[![Build Status](https://travis-ci.org/salsify/multiverse.svg?branch=master)](https://travis-ci.org/salsify/multiverse)
 
 ## Installation
 
@@ -117,13 +117,13 @@ end
 
 ## History
 
-View the [changelog](https://github.com/ankane/multiverse/blob/master/CHANGELOG.md)
+View the [changelog](https://github.com/salsify/multiverse/blob/master/CHANGELOG.md)
 
 ## Contributing
 
 Everyone is encouraged to help improve this project. Here are a few ways you can help:
 
-- [Report bugs](https://github.com/ankane/multiverse/issues)
-- Fix bugs and [submit pull requests](https://github.com/ankane/multiverse/pulls)
+- [Report bugs](https://github.com/salsify/multiverse/issues)
+- Fix bugs and [submit pull requests](https://github.com/salsify/multiverse/pulls)
 - Write, clarify, or fix documentation
 - Suggest or add new features
