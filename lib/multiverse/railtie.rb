@@ -35,11 +35,7 @@ module Multiverse
             begin
               should_reconnect = ActiveRecord::Base.connection_pool.active_connection?
               ActiveRecord::Schema.verbose = false
-              if ActiveRecord::VERSION::MAJOR >= 5
-                ActiveRecord::Tasks::DatabaseTasks.load_schema(ActiveRecord::Base.configurations[Multiverse.env("test")], :ruby, ENV["SCHEMA"])
-              else
-                ActiveRecord::Tasks::DatabaseTasks.load_schema_for(ActiveRecord::Base.configurations[Multiverse.env("test")], :ruby, ENV["SCHEMA"])
-              end
+              load_schema(ActiveRecord::Base.configurations[Multiverse.env("test")], :ruby, ENV["SCHEMA"])
             ensure
               if should_reconnect
                 ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[Multiverse.env(ActiveRecord::Tasks::DatabaseTasks.env)])
@@ -48,7 +44,7 @@ module Multiverse
           end
 
           task load_structure: %w(db:test:purge) do
-            ActiveRecord::Tasks::DatabaseTasks.load_schema ActiveRecord::Base.configurations[Multiverse.env("test")], :sql, ENV["SCHEMA"]
+            load_schema(ActiveRecord::Base.configurations[Multiverse.env("test")], :sql, ENV["SCHEMA"])
           end
 
           task purge: %w(environment load_config) do
@@ -56,6 +52,14 @@ module Multiverse
             ActiveRecord::Tasks::DatabaseTasks.purge ActiveRecord::Base.configurations[Multiverse.env("test")]
           end
         end
+      end
+    end
+
+    def load_schema(config, format, file)
+      if ActiveRecord::VERSION::MAJOR >= 5
+        ActiveRecord::Tasks::DatabaseTasks.load_schema(config, format, file)
+      else
+        ActiveRecord::Tasks::DatabaseTasks.load_schema_for(config, format, file)
       end
     end
   end
